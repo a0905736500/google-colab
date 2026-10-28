@@ -60,7 +60,8 @@
    [ Linear ]   ───> Output: 10 (0~9 類別 Logits)
 ```
 ---
-## 🎲 隨機種子設定 (Reproducibility)
+
+### 🎲 隨機種子設定 (Reproducibility)
 
 為了確保模型訓練與實驗結果的可重複性（Reproducibility），我們固定了 Python 原生 `random` 與 PyTorch 的隨機種子（Seed）：
 
