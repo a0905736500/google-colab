@@ -80,7 +80,6 @@ print("=" * 60)
 print("AI 手寫數字辨識模型訓練開始")
 print("=" * 60)
 ```
----
 ### ⚡ 運算環境自動偵測 (Environment Setup)
 
 程式會自動判斷 Google Colab 當前是否已啟用 GPU 加速：
@@ -99,7 +98,7 @@ else:
     print("如需 GPU，請在 Colab 設定硬體加速器。")
 ```
 <img width="577" height="103" alt="image" src="https://github.com/user-attachments/assets/036dad40-729e-4a54-8b92-72ba28fed00e" />
----
+
 
 ### 📁 建立專案資料夾
 ```python
@@ -113,7 +112,7 @@ os.makedirs(RESULT_DIR, exist_ok=True)
 print("專案資料夾：", PROJECT_DIR)
 ```
 <img width="1026" height="93" alt="image" src="https://github.com/user-attachments/assets/b223c7c1-841a-4555-8fdb-594e567a1fd3" />
----
+
 
 ### 📦 資料集下載與批次處理 (Data Pipeline)
 
@@ -129,7 +128,7 @@ train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_worke
 test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=2, pin_memory=torch.cuda.is_available())
 ```
 <img width="623" height="107" alt="image" src="https://github.com/user-attachments/assets/241df5f5-4374-433f-a0e3-a71abc1dd30a" />
----
+
 
 ### 🏗️ 神經網路架構設計 (Model Architecture)
 
@@ -157,7 +156,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 ```
 <img width="804" height="271" alt="image" src="https://github.com/user-attachments/assets/51443a55-267f-4f83-98f9-82adf7732b9f" />
----
+
 
 ### 🔄 模型訓練迴圈 (Training Loop)
 
@@ -191,7 +190,7 @@ for epoch in range(EPOCHS):
     history["accuracy"].append(epoch_accuracy)
 ```
 <img width="558" height="414" alt="image" src="https://github.com/user-attachments/assets/771c0a08-07e9-40c7-acfa-871cf4965468" />
----
+
 
 ### 🧪 模型評估與測試 (Model Evaluation)
 
@@ -218,7 +217,7 @@ test_accuracy = 100.0 * correct / total
 average_test_loss = test_loss / total
 ```
 <img width="539" height="109" alt="image" src="https://github.com/user-attachments/assets/bb925332-d08c-49fd-bfef-21e7b8e0a99a" />
----
+
 
 ### 💾 模型儲存與檢查點保存 (Model Checkpointing)
 
@@ -242,7 +241,7 @@ torch.save(
 )
 ```
 <img width="834" height="101" alt="image" src="https://github.com/user-attachments/assets/0bc5b1c7-524b-49c2-9eff-d8a489d01aa9" />
----
+
 
 ### 📊 訓練歷程可視化 (Training Visualization)
 
@@ -271,7 +270,7 @@ plt.savefig(FIGURE_PATH, dpi=150)
 plt.show()
 ```
 <img width="1153" height="424" alt="image" src="https://github.com/user-attachments/assets/60966049-dc83-44d5-a2e6-b2a78a905197" />
----
+
 
 ### 🖼️ 直觀模型推論與展示 (Model Inference & Visualization)
 
