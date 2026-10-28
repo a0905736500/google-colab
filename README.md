@@ -217,7 +217,8 @@ with torch.no_grad():
 test_accuracy = 100.0 * correct / total
 average_test_loss = test_loss / total
 ```
-<img width="539" height="109" alt="image" src="https://github.com/user-attachments/assets/bb925332-d08c-49fd-bfef-21e7b8e0a99a" />
+<img width="660" height="112" alt="image" src="https://github.com/user-attachments/assets/7faa0f64-0741-4e0e-acbc-884b53c24e73" />
+
 
 
 ### 💾 模型儲存與檢查點保存 (Model Checkpointing)
@@ -270,7 +271,8 @@ FIGURE_PATH = os.path.join(RESULT_DIR, "training_curves.png")
 plt.savefig(FIGURE_PATH, dpi=150)
 plt.show()
 ```
-<img width="1153" height="424" alt="image" src="https://github.com/user-attachments/assets/60966049-dc83-44d5-a2e6-b2a78a905197" />
+<img width="1172" height="456" alt="image" src="https://github.com/user-attachments/assets/4c623744-03d1-42c0-ac09-d3af1b9c9bed" />
+
 
 
 ### 🖼️ 直觀模型推論與展示 (Model Inference & Visualization)
@@ -301,4 +303,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(RESULT_DIR, "prediction_examples.png"), dpi=150)
 plt.show()
 ```
-<img width="1127" height="664" alt="image" src="https://github.com/user-attachments/assets/8281f374-049e-412d-985f-e77fef61dd50" />
+<img width="1172" height="676" alt="image" src="https://github.com/user-attachments/assets/920ebb86-5ee3-4890-a980-155df35c459e" />
