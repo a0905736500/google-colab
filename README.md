@@ -27,7 +27,17 @@
 4. **訓練結果可視化與評估**：使用 `matplotlib` 監控 Loss/Accuracy 學習曲線，並實作測試集圖形預測展示。
 
 ---
+## 🛠️ 開發工具與套件 (Tools & Stack)
 
+本專案運用以下雲端算力與深度學習工具建構：
+
+* **雲端運算平台**：[Google Colab](https://colab.research.google.com/) (免費 T4 GPU 加速)
+* **資料儲存機制**：Google Drive (透過 `google.colab.drive` 自動掛載持久化)
+* **核心開發語言**：Python 3.8+
+* **深度學習框架**：[PyTorch](https://pytorch.org/) (`torch`, `torch.nn`, `torch.utils.data`)
+* **電腦視覺與資料集**：`torchvision` (MNIST Dataset & Transforms)
+* **資料視覺化**：`matplotlib` (訓練曲線與預測結果可視化)
+---
 ## 🏗️ 範例模型架構與配置
 
 作為展示範例，我們建立了一個多層感知機（MLP）模型進行手寫數字辨識：
