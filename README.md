@@ -49,4 +49,68 @@
        │
    [ Linear ]   ───> Output: 10 (0~9 類別 Logits)
 ```
+## 🎲 隨機種子設定 (Reproducibility)
 
+為了確保模型訓練與實驗結果的可重複性（Reproducibility），我們固定了 Python 原生 `random` 與 PyTorch 的隨機種子（Seed）：
+
+```python
+import random
+import torch
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(SEED)
+
+print("=" * 60)
+print("AI 手寫數字辨識模型訓練開始")
+print("=" * 60)
+```
+### ⚡ 運算環境自動偵測 (Environment Setup)
+
+程式會自動判斷 Google Colab 當前是否已啟用 GPU 加速：
+
+```python
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+print("\n[1/8] 運算環境")
+print("PyTorch 版本：", torch.__version__)
+print("使用裝置：", device)
+
+if torch.cuda.is_available():
+    print("GPU 型號：", torch.cuda.get_device_name(0))
+else:
+    print("目前使用 CPU，訓練速度可能較慢。")
+    print("如需 GPU，請在 Colab 設定硬體加速器。")
+```
+print("\n[2/8] 連接 Google Drive")
+
+drive.mount("/content/drive")
+
+### 建立專案資料夾
+```python
+PROJECT_DIR = "/content/drive/MyDrive/MNIST_AI_Project"
+MODEL_DIR = os.path.join(PROJECT_DIR, "models")
+RESULT_DIR = os.path.join(PROJECT_DIR, "results")
+
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(RESULT_DIR, exist_ok=True)
+
+print("專案資料夾：", PROJECT_DIR)
+```
+### 📦 資料集下載與批次處理 (Data Pipeline)
+
+使用 `torchvision.datasets` 自動下載 MNIST 資料集，並利用 `DataLoader` 進行平行化的批次處理：
+
+```python
+transform = transforms.ToTensor()
+
+train_dataset = datasets.MNIST(root="/content/mnist_data", train=True, download=True, transform=transform)
+test_dataset = datasets.MNIST(root="/content/mnist_data", train=False, download=True, transform=transform)
+
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=2, pin_memory=torch.cuda.is_available())
+```
