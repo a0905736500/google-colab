@@ -86,9 +86,7 @@ else:
     print("目前使用 CPU，訓練速度可能較慢。")
     print("如需 GPU，請在 Colab 設定硬體加速器。")
 ```
-print("\n[2/8] 連接 Google Drive")
-
-drive.mount("/content/drive")
+<img width="577" height="103" alt="image" src="https://github.com/user-attachments/assets/036dad40-729e-4a54-8b92-72ba28fed00e" />
 
 ### 📁 建立專案資料夾
 ```python
@@ -101,6 +99,8 @@ os.makedirs(RESULT_DIR, exist_ok=True)
 
 print("專案資料夾：", PROJECT_DIR)
 ```
+<img width="1026" height="93" alt="image" src="https://github.com/user-attachments/assets/b223c7c1-841a-4555-8fdb-594e567a1fd3" />
+
 ### 📦 資料集下載與批次處理 (Data Pipeline)
 
 使用 `torchvision.datasets` 自動下載 MNIST 資料集，並利用 `DataLoader` 進行平行化的批次處理：
@@ -114,6 +114,8 @@ test_dataset = datasets.MNIST(root="/content/mnist_data", train=False, download=
 train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
 test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=2, pin_memory=torch.cuda.is_available())
 ```
+<img width="623" height="107" alt="image" src="https://github.com/user-attachments/assets/241df5f5-4374-433f-a0e3-a71abc1dd30a" />
+
 ### 🏗️ 神經網路架構設計 (Model Architecture)
 
 我們使用 PyTorch 的 `nn.Module` 建構多層感知機（MLP）網路：
@@ -139,6 +141,8 @@ model = MNISTModel().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 ```
+<img width="804" height="271" alt="image" src="https://github.com/user-attachments/assets/51443a55-267f-4f83-98f9-82adf7732b9f" />
+
 ### 🔄 模型訓練迴圈 (Training Loop)
 
 使用 PyTorch 標準的 Forward & Backward 流程進行模型訓練，並紀錄歷程：
@@ -170,6 +174,8 @@ for epoch in range(EPOCHS):
     history["loss"].append(epoch_loss)
     history["accuracy"].append(epoch_accuracy)
 ```
+<img width="558" height="414" alt="image" src="https://github.com/user-attachments/assets/771c0a08-07e9-40c7-acfa-871cf4965468" />
+
 ### 🧪 模型評估與測試 (Model Evaluation)
 
 在未參與訓練的測試集（Test Set）上測試模型的泛化能力：
@@ -194,6 +200,8 @@ with torch.no_grad():
 test_accuracy = 100.0 * correct / total
 average_test_loss = test_loss / total
 ```
+<img width="539" height="109" alt="image" src="https://github.com/user-attachments/assets/bb925332-d08c-49fd-bfef-21e7b8e0a99a" />
+
 ### 💾 模型儲存與檢查點保存 (Model Checkpointing)
 
 為了防止 Colab 連線中斷導致訓練成果遺失，程式會自動將模型權重與完整歷史紀錄存入 Google Drive：
@@ -215,6 +223,8 @@ torch.save(
     RESULT_PATH
 )
 ```
+<img width="834" height="101" alt="image" src="https://github.com/user-attachments/assets/0bc5b1c7-524b-49c2-9eff-d8a489d01aa9" />
+
 ### 📊 訓練歷程可視化 (Training Visualization)
 
 使用 `matplotlib` 將 20 個 Epoch 的訓練 Loss 與 Accuracy 畫成雙子圖，並自動匯出至 Google Drive：
@@ -241,6 +251,8 @@ FIGURE_PATH = os.path.join(RESULT_DIR, "training_curves.png")
 plt.savefig(FIGURE_PATH, dpi=150)
 plt.show()
 ```
+<img width="1153" height="424" alt="image" src="https://github.com/user-attachments/assets/60966049-dc83-44d5-a2e6-b2a78a905197" />
+
 ### 🖼️ 直觀模型推論與展示 (Model Inference & Visualization)
 
 抽樣 10 張測試集圖片進行實時預測，並用顏色標示預測結果（綠色代表正確、紅色代表錯誤）：
@@ -269,3 +281,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(RESULT_DIR, "prediction_examples.png"), dpi=150)
 plt.show()
 ```
+<img width="1127" height="664" alt="image" src="https://github.com/user-attachments/assets/8281f374-049e-412d-985f-e77fef61dd50" />
