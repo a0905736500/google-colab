@@ -114,3 +114,158 @@ test_dataset = datasets.MNIST(root="/content/mnist_data", train=False, download=
 train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
 test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=2, pin_memory=torch.cuda.is_available())
 ```
+### 🏗️ 神經網路架構設計 (Model Architecture)
+
+我們使用 PyTorch 的 `nn.Module` 建構多層感知機（MLP）網路：
+
+```python
+class MNISTModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(28 * 28, 256),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 10)
+        )
+
+    def forward(self, x):
+        return self.network(x)
+
+model = MNISTModel().to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+```
+### 🔄 模型訓練迴圈 (Training Loop)
+
+使用 PyTorch 標準的 Forward & Backward 流程進行模型訓練，並紀錄歷程：
+
+```python
+EPOCHS = 20
+history = {"loss": [], "accuracy": []}
+
+for epoch in range(EPOCHS):
+    model.train()
+    running_loss, correct, total = 0.0, 0, 0
+
+    for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
+        
+        optimizer.zero_grad()   # 1. 梯度歸零
+        outputs = model(images) # 2. 前向傳播
+        loss = criterion(outputs, labels) # 3. 計算 Loss
+        loss.backward()        # 4. 反向傳播
+        optimizer.step()       # 5. 權重更新
+
+        running_loss += loss.item() * images.size(0)
+        predictions = outputs.argmax(dim=1)
+        correct += (predictions == labels).sum().item()
+        total += labels.size(0)
+
+    epoch_loss = running_loss / total
+    epoch_accuracy = 100.0 * correct / total
+    history["loss"].append(epoch_loss)
+    history["accuracy"].append(epoch_accuracy)
+```
+### 🧪 模型評估與測試 (Model Evaluation)
+
+在未參與訓練的測試集（Test Set）上測試模型的泛化能力：
+
+```python
+model.eval()
+
+correct, total = 0, 0
+test_loss = 0.0
+
+with torch.no_grad():
+    for images, labels in test_loader:
+        images, labels = images.to(device), labels.to(device)
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+
+        test_loss += loss.item() * images.size(0)
+        predictions = outputs.argmax(dim=1)
+        correct += (predictions == labels).sum().item()
+        total += labels.size(0)
+
+test_accuracy = 100.0 * correct / total
+average_test_loss = test_loss / total
+```
+### 💾 模型儲存與檢查點保存 (Model Checkpointing)
+
+為了防止 Colab 連線中斷導致訓練成果遺失，程式會自動將模型權重與完整歷史紀錄存入 Google Drive：
+
+```python
+MODEL_PATH = os.path.join(MODEL_DIR, "mnist_model.pth")
+torch.save(model.state_dict(), MODEL_PATH)
+
+RESULT_PATH = os.path.join(RESULT_DIR, "training_results.pt")
+torch.save(
+    {
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+        "epochs": EPOCHS,
+        "test_accuracy": test_accuracy,
+        "test_loss": average_test_loss,
+        "history": history
+    },
+    RESULT_PATH
+)
+```
+### 📊 訓練歷程可視化 (Training Visualization)
+
+使用 `matplotlib` 將 20 個 Epoch 的訓練 Loss 與 Accuracy 畫成雙子圖，並自動匯出至 Google Drive：
+
+```python
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+# 繪製 Training Loss 曲線
+axes[0].plot(range(1, EPOCHS + 1), history["loss"], marker="o")
+axes[0].set_title("Training Loss")
+axes[0].set_xlabel("Epoch")
+axes[0].set_ylabel("Loss")
+axes[0].grid(True)
+
+# 繪製 Training Accuracy 曲線
+axes[1].plot(range(1, EPOCHS + 1), history["accuracy"], marker="o", color="green")
+axes[1].set_title("Training Accuracy")
+axes[1].set_xlabel("Epoch")
+axes[1].set_ylabel("Accuracy (%)")
+axes[1].grid(True)
+
+plt.tight_layout()
+FIGURE_PATH = os.path.join(RESULT_DIR, "training_curves.png")
+plt.savefig(FIGURE_PATH, dpi=150)
+plt.show()
+```
+### 🖼️ 直觀模型推論與展示 (Model Inference & Visualization)
+
+抽樣 10 張測試集圖片進行實時預測，並用顏色標示預測結果（綠色代表正確、紅色代表錯誤）：
+
+```python
+model.eval()
+
+images, labels = next(iter(test_loader))
+images, labels = images.to(device), labels.to(device)
+
+with torch.no_grad():
+    outputs = model(images[:10])
+    predictions = outputs.argmax(dim=1)
+
+fig, axes = plt.subplots(2, 5, figsize=(12, 6))
+
+for i, ax in enumerate(axes.flat):
+    ax.imshow(images[i].cpu().squeeze(), cmap="gray")
+    actual = labels[i].cpu().item()
+    predicted = predictions[i].cpu().item()
+    
+    ax.set_title(f"True: {actual} | Pred: {predicted}", color="green" if actual == predicted else "red")
+    ax.axis("off")
+
+plt.tight_layout()
+plt.savefig(os.path.join(RESULT_DIR, "prediction_examples.png"), dpi=150)
+plt.show()
+```
