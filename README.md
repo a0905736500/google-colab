@@ -90,7 +90,7 @@ print("\n[2/8] 連接 Google Drive")
 
 drive.mount("/content/drive")
 
-### 建立專案資料夾
+### 📁 建立專案資料夾
 ```python
 PROJECT_DIR = "/content/drive/MyDrive/MNIST_AI_Project"
 MODEL_DIR = os.path.join(PROJECT_DIR, "models")
